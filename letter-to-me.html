@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Letter to  Me | july 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Cinzel:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple: #2d1b69;
+      --purple-mid: #4a2fa0;
+      --purple-light: #7c5cbf;
+      --silver: #c8d6e5;
+      --silver-glow: rgba(200, 214, 229, 0.4);
+      --silver-dim: rgba(200, 214, 229, 0.15);
+      --gold: #c9a84c;
+      --bg: #0b0814;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(200, 214, 229, 0.15);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      overflow-x: hidden;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--silver);
+    }
+
+    /* ── STARS BACKGROUND ── */
+    #stars-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* ── PAGE SYSTEM ── */
+    .page {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 30px 20px;
+      text-align: center;
+      opacity: 0; visibility: hidden;
+      transform: translateY(30px);
+      transition: opacity 1.2s ease, transform 1.2s ease, visibility 0s linear 1.2s;
+      z-index: 1; overflow: hidden;
+    }
+    .page.active {
+      opacity: 1; visibility: visible;
+      transform: translateY(0);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+      z-index: 10;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-block;
+      padding: 16px 44px;
+      border: 1px solid var(--silver);
+      border-radius: 50px;
+      background: transparent;
+      color: var(--silver);
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: 0.5s;
+    }
+    .btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(120deg, transparent 0%, var(--silver-dim) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    .btn:hover::before { transform: translateX(100%); }
+    .btn:hover {
+      background: var(--silver-dim);
+      box-shadow: 0 0 30px var(--silver-glow);
+      color: #fff;
+    }
+
+    /* ── HERO PAGE ── */
+    #hero {
+      background: radial-gradient(ellipse at center top, #1a0a3a 0%, #0b0814 70%);
+    }
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.65rem, 2vw, 0.8rem);
+      letter-spacing: 6px;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      animation: fadeUp 1.5s ease forwards;
+    }
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.2rem, 7vw, 5rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, var(--silver) 40%, var(--gold) 70%, var(--silver) 100%);
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 5s linear infinite, fadeUp 1.5s ease 0.3s forwards;
+      opacity: 0;
+      margin-bottom: 16px;
+      line-height: 1.15;
+    }
+    .hero-subtitle {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      color: rgba(200,214,229,0.6);
+      margin-bottom: 20px;
+      animation: fadeUp 1.5s ease 0.6s forwards;
+      opacity: 0;
+    }
+    .hero-date {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      color: var(--gold);
+      margin-bottom: 50px;
+      animation: fadeUp 1.5s ease 0.9s forwards;
+      opacity: 0;
+    }
+    .btn-wrap { animation: fadeUp 1.5s ease 1.2s forwards; opacity: 0; }
+
+    @keyframes shimmer { to { background-position: 300% center; } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 80px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--silver), transparent);
+      margin: 0 auto 40px;
+    }
+
+    /* ── ENVELOPE PAGE ── */
+    #envelope-page {
+      background: radial-gradient(ellipse at center, #160b35 0%, #0b0814 80%);
+    }
+    .envelope-wrap {
+      position: relative;
+      width: min(380px, 90vw);
+      cursor: pointer;
+    }
+    .envelope-body {
+      width: 100%;
+      padding-top: 70%;
+      background: linear-gradient(160deg, #1e0f4a 0%, #2d1b69 100%);
+      border-radius: 6px 6px 12px 12px;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 60px rgba(74,47,160,0.3);
+      border: 1px solid var(--glass-border);
+      transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+    .envelope-wrap:hover .envelope-body {
+      transform: translateY(-8px);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 80px rgba(74,47,160,0.5);
+    }
+    .envelope-flap {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(160deg, #2d1b69 0%, #1e0f4a 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 75%);
+      border-radius: 6px 6px 0 0;
+      border-bottom: 1px solid var(--glass-border);
+      transition: transform 0.8s ease;
+      transform-origin: top center;
+    }
+    .envelope-wrap.open .envelope-flap {
+      transform: rotateX(180deg);
+    }
+    .envelope-seal {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -10%);
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, var(--gold), #8b6914);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 0 20px rgba(201,168,76,0.5);
+      transition: opacity 0.4s ease;
+    }
+    .envelope-wrap.open .envelope-seal { opacity: 0; }
+    .envelope-inner {
+      position: absolute;
+      top: 10%; left: 10%; right: 10%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      padding: 16px;
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: rgba(200,214,229,0.5);
+      letter-spacing: 1px;
+    }
+    .envelope-hint {
+      margin-top: 30px;
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(200,214,229,0.5);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ── SLIDER PAGE ── */
+    #slider-page {
+      background: radial-gradient(ellipse at center, #120a30 0%, #0b0814 80%);
+    }
+    .slider-card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: clamp(40px, 8vw, 70px) clamp(30px, 6vw, 60px);
+      max-width: 520px; width: 92%;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 60px rgba(74,47,160,0.15);
+      position: relative;
+    }
+    .slide { display: none; animation: fadeInSlide 0.8s ease forwards; }
+    .slide.active { display: block; }
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .slide-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 5px;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .slide-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--silver);
+      margin-bottom: 36px;
+    }
+    .slide-text em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .slider-dots {
+      display: flex; justify-content: center; gap: 10px;
+      margin-bottom: 30px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--silver-dim);
+      transition: 0.4s;
+    }
+    .dot.active {
+      background: var(--silver);
+      transform: scale(1.6);
+      box-shadow: 0 0 8px var(--silver-glow);
+    }
+
+    /* ── LETTER PAGE ── */
+    #letter-page {
+      background: radial-gradient(ellipse at top, #1a0d40 0%, #0b0814 70%);
+      overflow-y: auto;
+      justify-content: flex-start;
+      padding: 60px 20px 80px;
+    }
+    .letter-container {
+      max-width: 680px; width: 95%;
+      margin: 0 auto;
+    }
+    .letter-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .letter-stamp {
+      display: inline-block;
+      border: 2px solid var(--gold);
+      padding: 8px 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+    .letter-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      background: linear-gradient(to right, var(--silver), #fff, var(--silver));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    .letter-date-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      color: rgba(200,214,229,0.45);
+      font-size: 1rem;
+    }
+    .letter-body {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: clamp(30px, 6vw, 60px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .letter-body::before {
+      content: '\275D';
+      position: absolute;
+      top: 20px; left: 30px;
+      font-size: 4rem;
+      color: var(--purple-light);
+      opacity: 0.3;
+      line-height: 1;
+    }
+    .letter-salutation {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+    .letter-para {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 300;
+      line-height: 1.95;
+      color: rgba(200,214,229,0.85);
+      margin-bottom: 24px;
+    }
+    .letter-para em { font-style: italic; color: var(--silver); }
+    .letter-para strong { font-weight: 600; color: #fff; }
+    .letter-section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      margin: 36px 0 16px;
+    }
+    .goal-list {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+    .goal-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      line-height: 1.7;
+      color: rgba(200,214,229,0.8);
+      margin-bottom: 14px;
+      padding-left: 4px;
+    }
+    .goal-list li::before {
+      content: '◆';
+      color: var(--gold);
+      font-size: 0.5rem;
+      margin-top: 8px;
+      flex-shrink: 0;
+    }
+    .letter-sign {
+      margin-top: 40px;
+      text-align: right;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 30px;
+    }
+    .letter-sign p {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: rgba(200,214,229,0.6);
+      margin-bottom: 8px;
+    }
+    .letter-sign .signature {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-style: italic;
+      color: var(--gold);
+    }
+    .letter-sign .sign-date {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: var(--purple-light);
+      margin-top: 6px;
+    }
+    .letter-footer {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    /* ── FINAL PAGE ── */
+    #final-page {
+      background: radial-gradient(ellipse at center, #1a0d40 0%, #0b0814 80%);
+    }
+    .final-icon {
+      font-size: 3rem;
+      margin-bottom: 24px;
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+    @keyframes floatIcon {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .final-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      background: linear-gradient(135deg, var(--silver), #fff, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+    .final-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: rgba(200,214,229,0.55);
+      margin-bottom: 50px;
+      max-width: 400px;
+    }
+    .final-buttons { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+
+    /* ── FLOATING PARTICLES ── */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      background: var(--silver);
+      opacity: 0;
+      animation: particleDrift linear forwards;
+      z-index: 0;
+    }
+    @keyframes particleDrift {
+      0%   { opacity: 0; transform: translateY(0) scale(0); }
+      15%  { opacity: 0.6; }
+      85%  { opacity: 0.3; }
+      100% { opacity: 0; transform: translateY(-100vh) scale(1.5); }
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--purple-mid), var(--silver), var(--gold));
+      z-index: 100;
+      transition: width 0.8s ease;
+    }
+
+    @media (max-width: 500px) {
+      .btn { padding: 14px 32px; font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+<div class="progress-bar" id="progress"></div>
+
+<!-- ── PAGE 1: HERO ── -->
+<section class="page active" id="hero">
+  <p class="hero-eyebrow">A Message Sealed With Time</p>
+  <h1 class="hero-title">Letter to<br/>Me</h1>
+  <p class="hero-subtitle">Written today. To be opened in july 2026.</p>
+  <p class="hero-date">April 2026 &nbsp;·&nbsp; A Promise to Myself</p>
+  <div class="btn-wrap">
+    <button class="btn" onclick="goTo('envelope-page', 1)">Begin the Journey</button>
+  </div>
+</section>
+
+<!-- ── PAGE 2: ENVELOPE ── -->
+<section class="page" id="envelope-page">
+  <p style="font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:5px; color:var(--purple-light); text-transform:uppercase; margin-bottom:30px;">Something awaits inside</p>
+  <div class="envelope-wrap" id="envelope" onclick="openEnvelope()">
+    <div class="envelope-body">
+      <div class="envelope-flap"></div>
+      <div class="envelope-seal">✦</div>
+      <div class="envelope-inner">
+        To: Me &nbsp;·&nbsp; July 2026<br/>
+        From: Me &nbsp;·&nbsp; April 2026
+      </div>
+    </div>
+    <p class="envelope-hint">Click to unseal ✦</p>
+  </div>
+</section>
+
+<!-- ── PAGE 3: SLIDER ── -->
+<section class="page" id="slider-page">
+  <div class="slider-card">
+    <div class="slider-dots">
+      <div class="dot active" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+      <div class="dot" id="d4"></div>
+    </div>
+
+    <div class="slide active" id="s1">
+      <p class="slide-label">Chapter One</p>
+      <p class=Right now, you re not starting anymore — you’ve come this far.<br/>
+The toughest parts are already behind you, and now you’re standing at the final stage.<br/>
+The journey isnt unknown anymore — its about to pay off.<br/>
+This is the moment where everything you've worked for is about to turn into reality.</p>
+<button class="btn" onclick="nextSlide(2)">One step away →</button>
+    </div>
+
+    <div class="slide" id="s2">
+      <p class="slide-label">Chapter Two</p>
+      <p class="slide-text">You didn't just take a leap — you stayed consistent when most people quit.<br/>
+A new job isn't just a hope anymore, it's right in front of you.<br/>
+<em>You turned effort into results.</em></p>
+<button class="btn" onclick="nextSlide(3)">Almost there →</button>
+    </div>
+
+    <div class="slide" id="s3">
+      <p class="slide-label">Chapter Three</p>
+      <p class="slide-text">This letter holds your <em>dreams, your fears,</em><br/>and the quiet promises you made to yourself.</p>
+      <button class="btn" onclick="nextSlide(4)">Continue →</button>
+    </div>
+
+    <div class="slide" id="s4">
+      <p class="slide-label">The Letter</p>
+      <p class="slide-text">Are you ready to read<br/>what you wrote to your <em> self?</em></p>
+      <button class="btn" onclick="goTo('letter-page', 3)">Open the Letter ✦</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── PAGE 4: LETTER ── -->
+<section class="page" id="letter-page">
+  <div class="letter-container">
+    <div class="letter-header">
+      <div class="letter-stamp">Sealed · April 2026 · Open July 2026</div>
+      <h2 class="letter-title">My Dearest  Self</h2>
+      <p class="letter-date-sub">Written with hope, written with heart.</p>
+    </div>
+
+    <div class="letter-body">
+      <p class="letter-salutation">Dear Me,</p>
+
+      <p class="letter-para">
+        I am writing this to you from a place of <em>new beginnings.</em> Today, I just landed a new job — and for the first time in a while, I feel something I had almost forgotten: <strong>hope.</strong> Real, quiet, trembling hope.
+      </p>
+
+      <p class="letter-para">
+        The road here was not easy. There were nights I questioned everything — my choices, my worth, my direction. But I kept going. And somehow, against all the doubt, <strong>I made it here.</strong>
+      </p>
+
+      <div class="divider"></div>
+
+      <p class="letter-section-title">✦ What I hope for you, one year from now</p>
+
+      <ul class="goal-list">
+        <li>That you have settled into your role with <em>confidence and grace</em> — that you walk into work feeling like you belong there, because you do.</li>
+        <li>That you have learned something new every single month — a skill, a lesson, a perspective that made you sharper and wiser.</li>
+        <li>That you have <em>built real relationships</em> at work — people who trust you, and whom you trust in return.</li>
+        <li>That your name is remembered for the <em>quality of your work</em>, your consistency, and your integrity.</li>
+        <li>That you have saved a little more, spent a little wiser, and started to build something for your future self — the one beyond even this letter.</li>
+        <li>That you <em>did not play small.</em> That when the moment came to speak up, to take initiative, to lead — you did.</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <p class="letter-section-title">✦ A few reminders, just in case</p>
+
+      <p class="letter-para">
+        When things get hard — and they will — come back to this moment. The version of you who wrote this letter <em>believed in you completely.</em> That belief does not expire.
+      </p>
+
+      <p class="letter-para">
+        Do not compare your journey to anyone else's. <strong>Your path is your own.</strong> The pace doesn't matter — the direction does.
+      </p>
+
+      <p class="letter-para">
+        And please — <em>rest when you need to.</em> Ambition is beautiful, but so is stillness. You are allowed to breathe.
+      </p>
+
+      <div class="divider"></div>
+
+      <p class="letter-para" style="font-style: italic; text-align: center; color: var(--silver); font-size: clamp(1.1rem, 3vw, 1.4rem);">
+        "You are not behind. You are not lost.<br/>You are exactly where your story needs you to be."
+      </p>
+
+      <div class="letter-sign">
+        <p>With all the love I have for the person I am becoming,</p>
+        <div class="signature">— Me, April 2026</div>
+        <div class="sign-date">To be opened · July 2026</div>
+      </div>
+    </div>
+
+    <div class="letter-footer">
+      <button class="btn" onclick="goTo('final-page', 4)" style="margin-top: 40px;">Close the Letter ✦</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── PAGE 5: FINAL ── -->
+<section class="page" id="final-page">
+  <div class="final-icon">✦</div>
+  <h2 class="final-title">You've Read It.</h2>
+  <p class="final-sub">Now go out there and make this letter proud.</p>
+  <div class="final-buttons">
+    <button class="btn" onclick="location.reload()">Read Again</button>
+  </div>
+  <p style="margin-top: 50px; font-family:'IM Fell English',serif; font-style:italic; color:rgba(200,214,229,0.3); font-size:0.95rem;">
+    Save this page. Open it again in July 2026. 🌙
+  </p>
+</section>
+
+<script>
+  // ── STARS ──
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        a: Math.random(),
+        speed: Math.random() * 0.008 + 0.003,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+  function drawStars(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      const alpha = 0.3 + 0.5 * Math.sin(t * s.speed + s.phase);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,214,229,${alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  resizeCanvas(); initStars(); requestAnimationFrame(drawStars);
+  window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
+
+  // ── PARTICLES ──
+  function spawnParticle() {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random() * 100}vw;
+      bottom: -10px;
+      animation-duration: ${Math.random() * 6 + 5}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 11000);
+  }
+  setInterval(spawnParticle, 600);
+
+  // ── NAVIGATION ──
+  const pages = ['hero','envelope-page','slider-page','letter-page','final-page'];
+  const progress = document.getElementById('progress');
+
+  function goTo(id, step) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const pct = Math.round((step / (pages.length - 1)) * 100);
+    progress.style.width = pct + '%';
+    window.scrollTo(0, 0);
+  }
+
+  // ── ENVELOPE ──
+  let envelopeOpened = false;
+  function openEnvelope() {
+    if (envelopeOpened) return;
+    envelopeOpened = true;
+    document.getElementById('envelope').classList.add('open');
+    setTimeout(() => goTo('slider-page', 2), 1200);
+  }
+
+  // ── SLIDER ──
+  let currentSlide = 1;
+  function nextSlide(n) {
+    document.getElementById('s' + currentSlide).classList.remove('active');
+    document.getElementById('d' + currentSlide).classList.remove('active');
+    currentSlide = n;
+    document.getElementById('s' + n).classList.add('active');
+    document.getElementById('d' + n).classList.add('active');
+  }
+</script>
+</body>
+</html>
